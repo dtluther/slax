@@ -33,9 +33,9 @@ defmodule SlaxWeb.ChatRoomLive do
           <div class="text-xs leading-none h-3 hover:cursor-pointer" phx-click="toggle-topic">
             <%= if @hide_topic? do %>
               <span class="text-slate-600">[Topic hidden]</span>
-              <% else %>
+            <% else %>
               <%= @room.topic %>
-              <% end %>
+            <% end %>
           </div>
         </div>
       </div>
@@ -45,39 +45,51 @@ defmodule SlaxWeb.ChatRoomLive do
 
   defp room_link(assigns) do
     ~H"""
-    <a
+    <.link
       class={[
         "flex items-center h-8 text-sm pl-8 pr-3",
         (@active && "bg-slate-300") || "hover:bg-slate-300"
       ]}
-      href={~p"/rooms/#{@room}"}
-      >
+      patch={~p"/rooms/#{@room}"}
+    >
       <.icon name="hero-hashtag" class="h-4 w-4" />
       <span class={["ml-2 leading-none", @active && "font-bold"]}>
         <%= @room.name %>
       </span>
-    </a>
+    </.link>
     """
   end
 
   def mount(params, _session, socket) do
+    # TODO: Remove, but this shows the difference between href, navigate, and patch
+    IO.puts("mount #{inspect(params)} (connected: #{connected?(socket)})")
+
     rooms = Repo.all(Room)
+
+    socket =
+      socket
+      |> assign(:rooms, rooms)
+
+    {:ok, socket}
+  end
+
+  def handle_params(params, _uri, socket) do
+    # TODO: Remove, but this shows the difference between navigate and patch
+    IO.puts("handle params #{inspect(params)} (connected: #{connected?(socket)})")
+
     room =
       case Map.fetch(params, "id") do
         {:ok, id} ->
           Repo.get!(Room, id)
 
         :error ->
-          List.first(rooms)
+          List.first(socket.assigns.rooms)
       end
 
-    socket =
-      socket
-      |> assign(:rooms, rooms)
-      |> assign(:room, room)
-      |> assign(:hide_topic?, :false)
-
-    {:ok, socket}
+    {:noreply,
+     socket
+     |> assign(:room, room)
+     |> assign(:hide_topic?, false)}
   end
 
   def handle_event("toggle-topic", _unsigned_params, socket) do
