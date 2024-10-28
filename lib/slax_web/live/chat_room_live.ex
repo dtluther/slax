@@ -32,9 +32,9 @@ defmodule SlaxWeb.ChatRoomLive do
           <div class="text-xs leading-none h-3 hover:cursor-pointer" phx-click="toggle-topic">
             <%= if @hide_topic? do %>
               <span class="text-slate-600">[Topic hidden]</span>
-            <% else %>
+              <% else %>
               <%= @room.topic %>
-            <% end %>
+              <% end %>
           </div>
         </div>
       </div>
@@ -50,7 +50,7 @@ defmodule SlaxWeb.ChatRoomLive do
         (@active && "bg-slate-300") || "hover:bg-slate-300"
       ]}
       patch={~p"/rooms/#{@room}"}
-    >
+      >
       <.icon name="hero-hashtag" class="h-4 w-4" />
       <span class={["ml-2 leading-none", @active && "font-bold"]}>
         <%= @room.name %>
@@ -86,9 +86,10 @@ defmodule SlaxWeb.ChatRoomLive do
       end
 
     {:noreply,
-     socket
-     |> assign(:room, room)
-     |> assign(:hide_topic?, false)}
+      socket
+      |> assign(:room, room)
+      |> assign(:page_title, "#" <> room.name)
+      |> assign(:hide_topic?, false)}
   end
 
   def handle_event("toggle-topic", _unsigned_params, socket) do
