@@ -2,9 +2,13 @@ defmodule Slax.Chat do
   alias Slax.Repo
   alias Slax.Chat.Room
 
+  import Ecto.Query
+
   def get_first_room! do
-    [room | _] = list_rooms()
-    room
+    Room
+    |> order_by([asc: :inserted_at])
+    |> limit(1)
+    |> Repo.one!
   end
 
   def get_room!(id) do
@@ -12,6 +16,8 @@ defmodule Slax.Chat do
   end
 
   def list_rooms do
-    Room |> Repo.all()
+    Room
+    |> order_by([asc: :name])
+    |> Repo.all()
   end
 end
