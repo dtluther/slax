@@ -12,7 +12,7 @@ defmodule SlaxWeb.ChatRoomLive.Edit do
           <.link
             class="font-normal text-xs text-blue-600 hover:text-blue-700"
             navigate={~p"/rooms/#{@room}"}
-            >
+          >
             Back
           </.link>
         </:actions>
@@ -59,9 +59,9 @@ defmodule SlaxWeb.ChatRoomLive.Edit do
     case Chat.update_room(socket.assigns.room, room_params) do
       {:ok, room} ->
         {:noreploy,
-          socket
-          |> put_flash(:info, "Room updated successfully")
-          |> push_navigate(to: ~p"/rooms/#{room}")}
+         socket
+         |> put_flash(:info, "Room updated successfully")
+         |> push_navigate(to: ~p"/rooms/#{room}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}

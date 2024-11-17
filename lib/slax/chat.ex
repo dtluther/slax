@@ -6,9 +6,9 @@ defmodule Slax.Chat do
 
   def get_first_room! do
     Room
-    |> order_by([asc: :inserted_at])
+    |> order_by(asc: :inserted_at)
     |> limit(1)
-    |> Repo.one!
+    |> Repo.one!()
   end
 
   def get_room!(id) do
@@ -17,7 +17,7 @@ defmodule Slax.Chat do
 
   def list_rooms do
     Room
-    |> order_by([asc: :name])
+    |> order_by(asc: :name)
     |> Repo.all()
   end
 

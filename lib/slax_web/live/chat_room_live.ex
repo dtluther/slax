@@ -32,18 +32,51 @@ defmodule SlaxWeb.ChatRoomLive do
             <.link
               class="font-normal text-xs text-blue-600 hover:text-blue-700"
               navigate={~p"/rooms/#{@room}/edit"}
-              >
+            >
               Edit
             </.link>
           </h1>
           <div class="text-xs leading-none h-3 hover:cursor-pointer" phx-click="toggle-topic">
             <%= if @hide_topic? do %>
               <span class="text-slate-600">[Topic hidden]</span>
-              <% else %>
+            <% else %>
               <%= @room.topic %>
-              <% end %>
+            <% end %>
           </div>
         </div>
+        <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
+          <%= if @current_user do %>
+            <li class="text-[0.8125rem] leading-6 text-zinc-900">
+              <%= @current_user.email %>
+            </li>
+            <li>
+              <.link
+                href={~p"/users/log_out"}
+                method="delete"
+                class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+              >
+                Log out
+              </.link>
+            </li>
+          <% else %>
+            <li>
+              <.link
+                href={~p"/users/register"}
+                class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+              >
+                Register
+              </.link>
+            </li>
+            <li>
+              <.link
+                href={~p"/users/log_in"}
+                class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+              >
+                Log in
+              </.link>
+            </li>
+          <% end %>
+        </ul>
       </div>
     </div>
     """
@@ -57,7 +90,7 @@ defmodule SlaxWeb.ChatRoomLive do
         (@active && "bg-slate-300") || "hover:bg-slate-300"
       ]}
       patch={~p"/rooms/#{@room}"}
-      >
+    >
       <.icon name="hero-hashtag" class="h-4 w-4" />
       <span class={["ml-2 leading-none", @active && "font-bold"]}>
         <%= @room.name %>
@@ -93,10 +126,10 @@ defmodule SlaxWeb.ChatRoomLive do
       end
 
     {:noreply,
-      socket
-      |> assign(:room, room)
-      |> assign(:page_title, "#" <> room.name)
-      |> assign(:hide_topic?, false)}
+     socket
+     |> assign(:room, room)
+     |> assign(:page_title, "#" <> room.name)
+     |> assign(:hide_topic?, false)}
   end
 
   def handle_event("toggle-topic", _unsigned_params, socket) do
