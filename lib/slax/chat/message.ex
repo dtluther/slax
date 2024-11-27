@@ -2,9 +2,12 @@ defmodule Slax.Chat.Message do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Slax.Accounts.User
+  alias Slax.Chat.Room
+
   schema "messages" do
-    field :user_id, :id
-    field :room_id, :id
+    belongs_to :user, User
+    belongs_to :room, Room
 
     field :body, :string
 
@@ -15,6 +18,6 @@ defmodule Slax.Chat.Message do
   def changeset(message, attrs) do
     message
     |> cast(attrs, [:body])
-    |> validate_required([])
+    |> validate_required([:body])
   end
 end
