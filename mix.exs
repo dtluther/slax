@@ -81,7 +81,8 @@ defmodule Slax.MixProject do
         "tailwind slax --minify",
         "esbuild slax --minify",
         "phx.digest"
-      ]
+      ],
+      seed: "run ./priv/repo/seeds.exs"
     ]
   end
 end

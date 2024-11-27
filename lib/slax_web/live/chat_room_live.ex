@@ -130,19 +130,19 @@ defmodule SlaxWeb.ChatRoomLive do
   attr :message, Message, required: true
 
   defp message(assigns) do
-   ~H"""
-   <div class="relative flex px-4 py-3">
-     <div class="h-10 w-10 rounded flex-shrink-0 bg-slate-300"></div>
-     <div class="ml-2">
-       <div class="-mt-1">
-         <.link class="text-sm font-semibold hover:underline">
-           <span><%= username(@message.user) %></span>
-         </.link>
-         <p class="text-sm"><%= @message.body %></p>
-       </div>
-     </div>
-   </div>
-   """
+    ~H"""
+    <div class="relative flex px-4 py-3">
+      <div class="h-10 w-10 rounded flex-shrink-0 bg-slate-300"></div>
+      <div class="ml-2">
+        <div class="-mt-1">
+          <.link class="text-sm font-semibold hover:underline">
+            <span><%= username(@message.user) %></span>
+          </.link>
+          <p class="text-sm"><%= @message.body %></p>
+        </div>
+      </div>
+    </div>
+    """
   end
 
   defp username(user) do
@@ -174,7 +174,7 @@ defmodule SlaxWeb.ChatRoomLive do
         :error ->
           Chat.get_first_room!()
       end
-    
+
     messages = Chat.list_messages_in_room(room)
 
     {:noreply,
