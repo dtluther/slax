@@ -44,4 +44,12 @@ defmodule Slax.Chat do
     |> preload(:user)
     |> Repo.all()
   end
+
+  defdelegate change_message(message, attrs \\ %{}), to: Message, as: :changeset
+
+  def create_message(user, room, attrs) do
+    %Message{user: user, room: room}
+    |> change_message(attrs)
+    |> Repo.insert()
+  end
 end
