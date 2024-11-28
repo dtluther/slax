@@ -1,4 +1,5 @@
 defmodule Slax.Chat do
+  alias Slax.Accounts.User
   alias Slax.Repo
   alias Slax.Chat.{Message, Room}
 
@@ -51,5 +52,11 @@ defmodule Slax.Chat do
     %Message{user: user, room: room}
     |> change_message(attrs)
     |> Repo.insert()
+  end
+
+  def delete_message_for_user(%User{id: user_id}, id) do
+    message = %Message{user_id: ^user_id} = Repo.get(Message, id)
+
+    Repo.delete(message)
   end
 end
