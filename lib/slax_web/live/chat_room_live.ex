@@ -1,5 +1,4 @@
 defmodule SlaxWeb.ChatRoomLive do
-
   use SlaxWeb, :live_view
 
   alias Slax.Accounts.User
@@ -7,6 +6,9 @@ defmodule SlaxWeb.ChatRoomLive do
   alias Slax.Chat.Message
 
   def render(assigns) do
+    # TODO: Remove, but this shows the lifecycle
+    IO.puts("render")
+
     ~H"""
     <div class="flex flex-col flex-shrink-0 w-64 bg-slate-100">
       <div class="flex justify-between items-center flex-shrink-0 h-16 border-b border-slate-300 px-4">
@@ -197,6 +199,8 @@ defmodule SlaxWeb.ChatRoomLive do
     # TODO: Remove, but this shows the difference between navigate and patch
     IO.puts("handle params #{inspect(params)} (connected: #{connected?(socket)})")
 
+    if socket.assigns[:room], do: Chat.unsubscribe_from_room(socket.assigns.room)
+
     room =
       case Map.fetch(params, "id") do
         {:ok, id} ->
@@ -205,6 +209,8 @@ defmodule SlaxWeb.ChatRoomLive do
         :error ->
           Chat.get_first_room!()
       end
+
+    Chat.subscribe_to_room(room)
 
     messages = Chat.list_messages_in_room(room)
 
@@ -236,11 +242,8 @@ defmodule SlaxWeb.ChatRoomLive do
 
     socket =
       case Chat.create_message(current_user, room, message_params) do
-        {:ok, message} ->
-          socket
-          # |> update(:messages, &(&1 ++ [message]))
-          |> stream_insert(:messages, message)
-          |> assign_message_form(Chat.change_message(%Message{}))
+        {:ok, _message} ->
+          assign_message_form(socket, Chat.change_message(%Message{}))
 
         {:error, changeset} ->
           assign_message_form(socket, changeset)
@@ -250,8 +253,16 @@ defmodule SlaxWeb.ChatRoomLive do
   end
 
   def handle_event("delete-message", %{"id" => message_id}, socket) do
-    {:ok, message} = Chat.delete_message_for_user(socket.assigns.current_user, message_id)
+    Chat.delete_message_for_user(socket.assigns.current_user, message_id)
 
+    {:noreply, socket}
+  end
+
+  def handle_info({:new_message, message}, socket) do
+    {:noreply, stream_insert(socket, :messages, message)}
+  end
+
+  def handle_info({:deleted_message, message}, socket) do
     {:noreply, stream_delete(socket, :messages, message)}
   end
 end
