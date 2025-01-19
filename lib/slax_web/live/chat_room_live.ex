@@ -32,7 +32,7 @@ defmodule SlaxWeb.ChatRoomLive do
       <div class="flex justify-between items-center flex-shrink-0 h-16 bg-white border-b border-slate-300 px-4">
         <div class="flex flex-col gap-1.5">
           <h1 h1 class="text-sm font-bold leading-none">
-            #<%= @room.name %>
+            #{@room.name}
 
             <.link
               class="font-normal text-xs text-blue-600 hover:text-blue-700"
@@ -45,14 +45,14 @@ defmodule SlaxWeb.ChatRoomLive do
             <%= if @hide_topic? do %>
               <span class="text-slate-600">[Topic hidden]</span>
             <% else %>
-              <%= @room.topic %>
+              {@room.topic}
             <% end %>
           </div>
         </div>
         <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
           <%= if @current_user do %>
             <li class="text-[0.8125rem] leading-6 text-zinc-900">
-              <%= username(@current_user) %>
+              {username(@current_user)}
             </li>
             <li>
               <.link
@@ -137,7 +137,7 @@ defmodule SlaxWeb.ChatRoomLive do
     >
       <.icon name="hero-hashtag" class="h-4 w-4" />
       <span class={["ml-2 leading-none", @active && "font-bold"]}>
-        <%= @room.name %>
+        {@room.name}
       </span>
     </.link>
     """
@@ -164,12 +164,12 @@ defmodule SlaxWeb.ChatRoomLive do
       <div class="ml-2">
         <div class="-mt-1">
           <.link class="text-sm font-semibold hover:underline">
-            <span><%= username(@message.user) %></span>
+            <span>{username(@message.user)}</span>
           </.link>
           <span :if={@timezone} class="ml-1 text-xs text-gray-500">
-            <%= message_timestamp(@message, @timezone) %>
+            {message_timestamp(@message, @timezone)}
           </span>
-          <p class="text-sm"><%= @message.body %></p>
+          <p class="text-sm">{@message.body}</p>
         </div>
       </div>
     </div>
