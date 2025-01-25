@@ -1,7 +1,7 @@
 defmodule Slax.Chat do
   alias Slax.Accounts.User
   alias Slax.Repo
-  alias Slax.Chat.{Message, Room}
+  alias Slax.Chat.{Message, Room, RoomMembership}
 
   import Ecto.Query
 
@@ -78,4 +78,8 @@ defmodule Slax.Chat do
   end
 
   def topic(room_id), do: "chat_room:#{room_id}"
+
+  def join_room!(room, user) do
+    Repo.insert!(%RoomMembership{room: room, user: user})
+  end
 end
