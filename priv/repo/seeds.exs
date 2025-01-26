@@ -42,6 +42,7 @@ boromir = Accounts.get_user_by_email("boromir@fellowship.me")
 
 room = Repo.insert!(%Room{name: "council-of-elrond", topic: "What to do with this ring?"})
 room_2 = Repo.insert!(%Room{name: "hobbiton", topic: "Does Bilbo live here?"})
+room_3 = Repo.insert!(%Room{name: "the shire", topic: "I think Bilbo is here!"})
 
 for {user, message} <- [
       {elrond,
@@ -56,4 +57,5 @@ for {user, message} <- [
     ] do
   Repo.insert!(%Message{user: user, room: room, body: message})
   Repo.insert!(%Message{user: user, room: room_2, body: message})
+  Repo.insert!(%Message{user: user, room: room_3, body: message})
 end

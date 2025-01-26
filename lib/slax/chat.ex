@@ -82,4 +82,16 @@ defmodule Slax.Chat do
   def join_room!(room, user) do
     Repo.insert!(%RoomMembership{room: room, user: user})
   end
+
+  def list_joined_rooms(user) do
+    user
+    |> Repo.preload(rooms: from(r in Room, order_by: r.name))
+    |> Map.fetch!(:rooms)
+  end
+
+  def joined?(room, user) do
+    RoomMembership
+    |> where(room_id: ^room.id, user_id: ^user.id)
+    |> Repo.exists?()
+  end
 end
