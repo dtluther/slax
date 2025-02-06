@@ -5,7 +5,8 @@ alias Slax.Accounts.User
 
 alias Slax.Chat.{
   Message,
-  Room
+  Room,
+  RoomMembership
 }
 
 alias Slax.Repo

@@ -84,6 +84,14 @@ defmodule Slax.Chat do
   end
 
   def list_joined_rooms(user) do
+    # # could also define the query and pass it to preload instead of using from
+    # query =
+    #   Room
+    #   |> order_by(asc: :name)
+    #
+    # user
+    # |> Repo.preload(rooms: query)
+
     user
     |> Repo.preload(rooms: from(r in Room, order_by: r.name))
     |> Map.fetch!(:rooms)
@@ -93,5 +101,22 @@ defmodule Slax.Chat do
     RoomMembership
     |> where(room_id: ^room.id, user_id: ^user.id)
     |> Repo.exists?()
+  end
+
+  def list_rooms_with_joined(user) do
+    # query =
+    #   from r in Room,
+    #     left_join: m in RoomMembership,
+    #     on: r.id == m.room_id and m.user_id == ^user.id,
+    #     select: {r, not is_nil(m.id)},
+    #     order_by: [asc: :name]
+    #
+    # Repo.all(query)
+
+    Room
+    |> join(:left, [r], m in RoomMembership, on: r.id == m.room_id and ^user.id == m.user_id)
+    |> select([r, m], {r, not is_nil(m.id)})
+    |> order_by([r, _m], asc: r.name)
+    |> Repo.all()
   end
 end
