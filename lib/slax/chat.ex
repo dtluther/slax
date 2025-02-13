@@ -3,6 +3,7 @@ defmodule Slax.Chat do
   alias Slax.Repo
   alias Slax.Chat.{Message, Room, RoomMembership}
 
+  import Ecto.Changeset
   import Ecto.Query
 
   @pubsub Slax.PubSub
@@ -121,7 +122,7 @@ defmodule Slax.Chat do
   end
 
   def toggle_room_membership(%Room{} = room, %User{} = user) do
-    case Repo.get_by(RoomMembership, user_id: user.id) do
+    case get_membership(room, user) do
       nil ->
         join_room!(room, user)
         {room, true}
@@ -129,6 +130,35 @@ defmodule Slax.Chat do
       membership ->
         Repo.delete!(membership)
         {room, false}
+    end
+  end
+
+  def update_last_read_id(room, user) do
+    case get_membership(room, user) do
+      %RoomMembership{} = membership ->
+        id =
+          Message
+          |> where(room_id: ^room.id)
+          |> select([m], max(m.id))
+          |> Repo.one()
+
+        membership
+        |> change(last_read_id: id)
+        |> Repo.update()
+
+      nil ->
+        nil
+    end
+  end
+
+  defp get_membership(room, user) do
+    Repo.get_by(RoomMembership, room_id: room.id, user_id: user.id)
+  end
+
+  def get_last_read_id(%Room{} = room, user) do
+    case get_membership(room, user) do
+      %RoomMembership{} = membership -> membership.last_read_id
+      nil -> nil
     end
   end
 end
