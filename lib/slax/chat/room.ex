@@ -7,6 +7,7 @@ defmodule Slax.Chat.Room do
 
   schema "rooms" do
     many_to_many :members, User, join_through: RoomMembership
+    has_many :memberships, RoomMembership
     has_many :messages, Message
 
     field :name, :string
