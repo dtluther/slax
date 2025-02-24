@@ -64,8 +64,9 @@ defmodule SlaxWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
       live "/", ChatRoomLive
-      live "/rooms/", ChatRoomLive.Index
+      live "/rooms", ChatRoomLive.Index
       live "/rooms/:id", ChatRoomLive
+      live "/rooms/:id/new", ChatRoomLive, :new
       live "/rooms/:id/edit", ChatRoomLive.Edit
     end
   end
