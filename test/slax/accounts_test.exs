@@ -17,21 +17,21 @@ defmodule Slax.AccountsTest do
     end
   end
 
-  describe "get_user_by_email_and_password/2" do
+  describe "get_authenticated_user/2" do
     test "does not return the user if the email does not exist" do
-      refute Accounts.get_user_by_email_and_password("unknown@example.com", "hello world!")
+      refute Accounts.get_authenticated_user("unknown@example.com", "hello world!")
     end
 
     test "does not return the user if the password is not valid" do
       user = user_fixture()
-      refute Accounts.get_user_by_email_and_password(user.email, "invalid")
+      refute Accounts.get_authenticated_user(user.email, "invalid")
     end
 
     test "returns the user if the email and password are valid" do
       %{id: id} = user = user_fixture()
 
       assert %User{id: ^id} =
-               Accounts.get_user_by_email_and_password(user.email, valid_user_password())
+               Accounts.get_authenticated_user(user.email, valid_user_password())
     end
   end
 
@@ -295,7 +295,7 @@ defmodule Slax.AccountsTest do
         })
 
       assert is_nil(user.password)
-      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
+      assert Accounts.get_authenticated_user(user.email, "new valid password")
     end
 
     test "deletes all tokens for the given user", %{user: user} do
@@ -490,7 +490,7 @@ defmodule Slax.AccountsTest do
     test "updates the password", %{user: user} do
       {:ok, updated_user} = Accounts.reset_user_password(user, %{password: "new valid password"})
       assert is_nil(updated_user.password)
-      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
+      assert Accounts.get_authenticated_user(user.email, "new valid password")
     end
 
     test "deletes all tokens for the given user", %{user: user} do
