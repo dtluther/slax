@@ -9,7 +9,6 @@ defmodule SlaxWeb.OnlineUsers do
     |> Enum.into(%{}, fn {id, %{metas: metas}} ->
       {String.to_integer(id), length(metas)}
     end)
-    |> dbg()
   end
 
   def track(pid, user) do
