@@ -25,9 +25,7 @@ defmodule Slax.Chat do
     |> Repo.all()
   end
 
-  def change_room(room, attrs \\ %{}) do
-    Room.changeset(room, attrs)
-  end
+  defdelegate change_room(room, attrs \\ %{}), to: Room, as: :changeset
 
   def create_room(attrs) do
     %Room{}
