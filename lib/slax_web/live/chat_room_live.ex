@@ -7,6 +7,8 @@ defmodule SlaxWeb.ChatRoomLive do
   alias Slax.Chat.{Message, Room}
   alias SlaxWeb.OnlineUsers
 
+  import SlaxWeb.RoomComponents
+
   def render(assigns) do
     # TODO: Remove, but this shows the lifecycle
     IO.puts("render")
@@ -220,18 +222,7 @@ defmodule SlaxWeb.ChatRoomLive do
       on_cancel={JS.navigate(~p"/rooms/#{@room}")}
     >
       <.header>New chat room</.header>
-      <.simple_form
-        for={@new_room_form}
-        id="room-form"
-        phx-change="validate-room"
-        phx-submit="save-room"
-      >
-        <.input field={@new_room_form[:name]} type="text" label="Name" />
-        <.input field={@new_room_form[:topic]} type="text" label="Topic" phx-debounce />
-        <:actions>
-          <.button phx-disable-with="Saving..." class="w-full">Save</.button>
-        </:actions>
-      </.simple_form>
+      <.room_form form={@new_room_form} />
     </.modal>
     """
   end
