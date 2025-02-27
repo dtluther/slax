@@ -39,8 +39,6 @@ defmodule SlaxWeb.Router do
     end
   end
 
-  ## Authentication routes
-
   scope "/", SlaxWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
