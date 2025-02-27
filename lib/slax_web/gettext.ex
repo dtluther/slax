@@ -5,7 +5,7 @@ defmodule SlaxWeb.Gettext do
   By using [Gettext](https://hexdocs.pm/gettext),
   your module gains a set of macros for translations, for example:
 
-      import SlaxWeb.Gettext
+      use SlaxWeb.Gettext, backend: SlaxWeb.Gettext
 
       # Simple translation
       gettext("Here is the string to translate")
@@ -20,5 +20,5 @@ defmodule SlaxWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :slax
+  use Gettext.Backend, otp_app: :slax
 end

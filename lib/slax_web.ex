@@ -38,12 +38,13 @@ defmodule SlaxWeb do
 
   def controller do
     quote do
+      use Gettext, backend: SlaxWeb.Gettext
+
       use Phoenix.Controller,
         formats: [:html, :json],
         layouts: [html: SlaxWeb.Layouts]
 
       import Plug.Conn
-      import SlaxWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -83,11 +84,12 @@ defmodule SlaxWeb do
 
   defp html_helpers do
     quote do
+      use Gettext, backend: SlaxWeb.Gettext
+
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components and translation
       import SlaxWeb.CoreComponents
-      import SlaxWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
