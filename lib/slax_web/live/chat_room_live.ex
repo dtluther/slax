@@ -7,8 +7,6 @@ defmodule SlaxWeb.ChatRoomLive do
   alias Slax.Chat.{Message, Room}
   alias SlaxWeb.OnlineUsers
 
-  import SlaxWeb.RoomComponents
-
   def render(assigns) do
     # TODO: Remove, but this shows the lifecycle
     IO.puts("render")
@@ -230,7 +228,11 @@ defmodule SlaxWeb.ChatRoomLive do
       on_cancel={JS.navigate(~p"/rooms/#{@room}")}
     >
       <.header>New chat room</.header>
-      <.room_form form={@new_room_form} />
+      <.live_component
+        module={SlaxWeb.ChatRoomLive.FormComponent}
+        id="new-room-component"
+        current_user={@current_user}
+      />
     </.modal>
     """
   end
@@ -406,7 +408,6 @@ defmodule SlaxWeb.ChatRoomLive do
     |> assign(:rooms, rooms)
     |> assign(:users, users)
     |> assign(:online_users, OnlineUsers.list())
-    |> assign_room_form(Chat.change_room(%Room{}))
     |> stream_configure(:messages,
       dom_id: fn
         %Message{id: id} -> "messages-#{id}"
@@ -415,10 +416,6 @@ defmodule SlaxWeb.ChatRoomLive do
       end
     )
     |> ok()
-  end
-
-  defp assign_room_form(socket, changeset) do
-    assign(socket, :new_room_form, to_form(changeset))
   end
 
   def handle_params(params, _uri, socket) do
@@ -525,33 +522,6 @@ defmodule SlaxWeb.ChatRoomLive do
       end
 
     {:noreply, socket}
-  end
-
-  def handle_event("validate-room", %{"room" => room_params}, socket) do
-    changeset =
-      socket.assigns.room
-      |> Chat.change_room(room_params)
-      |> Map.put(:action, :validate)
-
-    {:noreply, assign_room_form(socket, changeset)}
-  end
-
-  def handle_event("save-room", %{"room" => room_params}, socket) do
-    case Chat.create_room(room_params) do
-      {:ok, room} ->
-        Chat.join_room!(room, socket.assigns.current_user)
-
-        {:noreply,
-         socket
-         |> put_flash(:info, "Created room")
-         # push_patch/2 doesn’t reload the page, so it won’t reset the modal’s show state set on click.
-         # We could pair it with push_event/3 and a custom hook to close the modal, but that’s overkill.
-         # push_navigate/2 remounts the LiveView, which re-renders the page (and modal, without `show` set to true)
-         |> push_navigate(to: ~p"/rooms/#{room}")}
-
-      {:error, changeset} ->
-        {:noreply, assign_room_form(socket, changeset)}
-    end
   end
 
   def handle_event("delete-message", %{"id" => message_id}, socket) do
