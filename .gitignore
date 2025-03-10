@@ -1,3 +1,4 @@
+## BEGIN DEFAULTS FROM MIX ##
 # The directory Mix will write compiled artifacts to.
 /_build/
 
@@ -35,3 +36,6 @@ slax-*.tar
 npm-debug.log
 /assets/node_modules/
 
+## END DEFAULTS FROM MIX ##
+
+/priv/static/uploads

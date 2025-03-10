@@ -54,6 +54,7 @@ defmodule Slax.Chat do
            %Message{user: user, room: room}
            |> change_message(attrs)
            |> Repo.insert() do
+      dbg("about to broadcast_message to room #{room.id}, name: #{room.name}")
       Phoenix.PubSub.broadcast!(@pubsub, topic(room.id), {:new_message, message})
 
       {:ok, message}

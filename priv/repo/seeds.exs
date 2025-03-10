@@ -21,7 +21,8 @@ names = [
   "Elrond",
   "Frodo",
   "Gimli",
-  "Legolas"
+  "Legolas",
+  "Gandalf"
 ]
 
 pw = "TheFellowship"
