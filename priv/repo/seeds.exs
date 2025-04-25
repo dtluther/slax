@@ -29,13 +29,19 @@ pw = "TheFellowship"
 
 for name <- names do
   email = (name |> String.downcase()) <> "@fellowship.me"
-  Accounts.register_user(%{email: email, password: pw, password_confirmation: pw})
+  Accounts.register_user(%{username: name, email: email, password: pw, password_confirmation: pw})
 end
 
 name = "testuser"
 email = "#{name}@example.com"
 password = "passwordpassword"
-Accounts.register_user(%{email: email, password: password, password_confirmation: password})
+
+Accounts.register_user(%{
+  username: name,
+  email: email,
+  password: password,
+  password_confirmation: password
+})
 
 elrond = Accounts.get_user_by_email("elrond@fellowship.me")
 aragorn = Accounts.get_user_by_email("aragorn@fellowship.me")

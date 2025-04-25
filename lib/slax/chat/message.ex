@@ -17,6 +17,7 @@ defmodule Slax.Chat.Message do
   @doc false
   def changeset(message, attrs) do
     message
+    |> dbg()
     |> cast(attrs, [:body])
     |> validate_required([:body])
   end
